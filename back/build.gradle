@@ -2,7 +2,7 @@ apply plugin: 'java'
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'ru.beywer.mobi3.back.Main'
+        attributes 'Main-Class': 'ru.beywer.mobi3.home.back.Main'
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
@@ -14,4 +14,5 @@ dependencies {
     compile project(":meetlib")
     compile 'io.vertx:vertx-core:3.1.0'
     compile 'io.vertx:vertx-web:3.1.0'
+    compile 'com.google.code.gson:gson:2.4'
 }

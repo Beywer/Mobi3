@@ -1,4 +1,4 @@
-package ru.beywer.mobi3.lib;
+package ru.beywer.home.mobi3.lib;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +12,18 @@ public class Meet {
     private List<User> participants;
     private Date start;
     private Date end;
+    private MeetPriority meetPriority;
+
+    public Meet(){
+        name = null;
+        description = null;
+        owner = null;
+        start = null;
+        end = null;
+
+        meetPriority = MeetPriority.LOW;
+        this.participants = new ArrayList<>();
+    }
 
     public Meet(String name, User owner, Date start, Date end) {
         this.name = name;
@@ -19,8 +31,11 @@ public class Meet {
         this.start = start;
         this.end = end;
 
+        meetPriority = MeetPriority.LOW;
         this.participants = new ArrayList<>();
     }
+
+    //GETTERS SETTERS BLAH BLAH BLAH
 
     public String getName() {
         return name;
@@ -68,5 +83,13 @@ public class Meet {
 
     public void setEnd(Date end) {
         this.end = end;
+    }
+
+    public MeetPriority getMeetPriority() {
+        return meetPriority;
+    }
+
+    public void setMeetPriority(MeetPriority meetPriority) {
+        this.meetPriority = meetPriority;
     }
 }

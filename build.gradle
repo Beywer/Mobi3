@@ -11,8 +11,8 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
+
 allprojects {
-    task build << {task -> println "Build $task.project.name" }
     repositories {
         jcenter()
     }

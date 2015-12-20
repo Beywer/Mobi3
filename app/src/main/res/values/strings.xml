@@ -3,4 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="perform_get">Perform GET</string>
+    <string name="meetDefaultName">meetName</string>
+    <string name="meetDefaultDescription">This is a meet. Be happy ^^ !</string>
+    <string name="participate">Принять участие</string>
 </resources>

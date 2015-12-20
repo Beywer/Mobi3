@@ -27,5 +27,19 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="meetlib" exported="" />
+    <orderEntry type="library" exported="" name="vertx-core-3.1.0" level="project" />
+    <orderEntry type="library" exported="" name="vertx-web-3.1.0" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.4" level="project" />
+    <orderEntry type="library" exported="" name="netty-common-4.0.31.Final" level="project" />
+    <orderEntry type="library" exported="" name="netty-buffer-4.0.31.Final" level="project" />
+    <orderEntry type="library" exported="" name="netty-transport-4.0.31.Final" level="project" />
+    <orderEntry type="library" exported="" name="netty-handler-4.0.31.Final" level="project" />
+    <orderEntry type="library" exported="" name="netty-codec-http-4.0.31.Final" level="project" />
+    <orderEntry type="library" exported="" name="jackson-core-2.6.1" level="project" />
+    <orderEntry type="library" exported="" name="jackson-databind-2.6.1" level="project" />
+    <orderEntry type="library" exported="" name="vertx-auth-common-3.1.0" level="project" />
+    <orderEntry type="library" exported="" name="netty-codec-4.0.31.Final" level="project" />
+    <orderEntry type="library" exported="" name="jackson-annotations-2.6.0" level="project" />
   </component>
 </module>
