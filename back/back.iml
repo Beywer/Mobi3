@@ -13,7 +13,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/build/classes/main" />
     <output-test url="file://$MODULE_DIR$/build/classes/test" />
     <exclude-output />
@@ -41,5 +41,6 @@
     <orderEntry type="library" exported="" name="vertx-auth-common-3.1.0" level="project" />
     <orderEntry type="library" exported="" name="netty-codec-4.0.31.Final" level="project" />
     <orderEntry type="library" exported="" name="jackson-annotations-2.6.0" level="project" />
+    <orderEntry type="library" exported="" name="back.back" level="project" />
   </component>
 </module>

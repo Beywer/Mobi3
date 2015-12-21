@@ -8,6 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
 import ru.beywer.home.mobi3.lib.Meet;
 
 
@@ -21,15 +24,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        Meet meet  = new Meet();
-        final MeetsListViewAdapter meetAdapter = new MeetsListViewAdapter(this, null);
-
+        final ArrayList<Meet> meets = new ArrayList<>();
+        final MeetsListViewAdapter meetAdapter = new MeetsListViewAdapter(this, meets);
         final SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.meets_swipe_layout);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.d(TAG, "refreshing");
+
+                LoadMeetsTask task = new LoadMeetsTask();
+                task.execute();
+                try {
+                    ArrayList<Meet> loadedMeets = task.get();
+                    meets.clear();
+                    meets.addAll(loadedMeets);
+                    meetAdapter.notifyDataSetChanged();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
 
                 //Остановить анимацию
                 refreshLayout.setRefreshing(false);

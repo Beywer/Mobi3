@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:background="#eeeeee">
+    android:background="#eeeeee" >
 
     <TextView
         android:layout_width="wrap_content"
@@ -27,9 +27,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/participateCheckBox"
-        android:layout_below="@+id/meetDescription"
-        android:layout_alignParentEnd="true"
-        android:checked="false" />
+        android:checked="false"
+        android:layout_below="@+id/to"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -41,4 +41,64 @@
         android:layout_alignBottom="@+id/participateCheckBox"
         android:layout_toStartOf="@+id/participateCheckBox"
         android:layout_alignTop="@+id/participateCheckBox" />
+
+
+    <!--fromText-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/fromText"
+        android:id="@+id/fromText"
+        android:layout_below="@+id/meetDescription"
+        android:layout_alignParentStart="true" />
+
+    <!--from-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/from"
+        android:gravity="center"
+        android:id="@+id/from"
+        android:layout_alignTop="@+id/fromText"
+        android:layout_alignBottom="@+id/fromText"
+        android:layout_toEndOf="@+id/fromText"
+        android:layout_toStartOf="@+id/fromIdleTo" />
+
+    <!--Холостой-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text=""
+        android:id="@+id/fromIdleTo"
+        android:layout_alignTop="@+id/fromText"
+        android:layout_alignBottom="@+id/fromText"
+        android:layout_centerHorizontal="true" />
+
+    <!-- toText-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/toText"
+        android:id="@+id/toText"
+        android:layout_alignTop="@+id/fromText"
+        android:layout_alignBottom="@+id/fromText"
+        android:layout_toEndOf="@+id/from" />
+
+    <!-- to-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/to"
+        android:id="@+id/to"
+        android:gravity="center"
+        android:layout_alignTop="@+id/fromText"
+        android:layout_alignBottom="@+id/fromText"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/toText"
+        android:layout_alignParentTop="false" />
 </RelativeLayout>
