@@ -77,12 +77,20 @@ public class Meet {
         this.start = start;
     }
 
+    public void setStart(long startMillis) {
+        this.start = new Date(startMillis);
+    }
+
     public Date getEnd() {
         return end;
     }
 
     public void setEnd(Date end) {
         this.end = end;
+    }
+
+    public void setEnd(long endMillis) {
+        this.end = new Date(endMillis);
     }
 
     public MeetPriority getMeetPriority() {

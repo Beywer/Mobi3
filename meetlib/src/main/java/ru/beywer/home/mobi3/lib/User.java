@@ -2,6 +2,8 @@ package ru.beywer.home.mobi3.lib;
 
 import java.util.UUID;
 
+import javax.lang.model.element.Name;
+
 public class User {
 
     private String login;
@@ -60,5 +62,10 @@ public class User {
 
     public void setFatherName(String fatherName) {
         this.fatherName = fatherName;
+    }
+
+    @Override
+    public String toString() {
+        return name + "   " + password;
     }
 }

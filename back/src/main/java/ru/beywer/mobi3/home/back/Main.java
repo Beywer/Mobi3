@@ -32,14 +32,16 @@ public class Main {
 
     private static Map<String, Meet> meets;
     private static Map<String, User> users;
-    private static Gson gson = new Gson();
+    private static Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
 
     public static void main (String args[]) {
         System.out.println("Server main");
 
+        users = new HashMap<String, User>();
         meets = new HashMap<String, Meet>();
 
         User me = new User("Daniil","Miroshnikov", "Jurevich", "Beywer", "admin");
+        me.setPassword("37927");
         users.put(me.getLogin(), me);
         Meet defaultMeet = new Meet("meetOne", me, new Date(), new Date(System.currentTimeMillis() + 1000));
         defaultMeet.setDescription("AZAZA ME!!!");
@@ -68,7 +70,10 @@ public class Main {
 
     private static void authRequest(RoutingContext routingContext){
         String authorization = routingContext.request().getHeader("Authorization");
+        System.out.println("New request. Perform authorization: " + authorization);
         if(authorization == null){
+            System.out.println("HTTP 401");
+            routingContext.response().putHeader("WWW-Authenticate","Basic realm=\"Loh\"");
             routingContext.fail(401);
         }else{
             final String encodedUserPassword = authorization.replaceFirst("Basic ", "");
@@ -79,12 +84,15 @@ public class Main {
                 final StringTokenizer tokenizer = new StringTokenizer(usernameAndPassword, ":");
                 final String username = tokenizer.nextToken();
                 final String password = tokenizer.nextToken();
-                System.out.println(username + "   " + password);
+                System.out.println("Perform authorization. Get login and password: " + username + "   " + password);
 
                 User user = users.get(username);
                 if(user!=null && user.getPassword()!=null && user.getPassword().equals(password)){
+                    System.out.println("User founded");
                     routingContext.next();
                 }else{
+                    System.out.println("User " + username +" not found or password incorrect. HTTP 401   " + users);
+                    routingContext.response().putHeader("WWW-Authenticate","Basic realm=\"Loh\"");
                     routingContext.fail(401);
                 }
             } catch (IOException e) {
@@ -97,18 +105,18 @@ public class Main {
     }
 
     private static void getAllMeets(RoutingContext routingContext){
-//        if(routingContext.response().closed()) return;
+        System.out.println("Perform getAllMeets");
 
         List<Meet> answer = new ArrayList<>();
 
         //TODO показывать только сегодняшние встречи или по интервалу
         for(String id : meets.keySet()){
             Meet meet = meets.get(id);
+            System.out.println("Takeed meet " + id + "     " + meet.getName());
             answer.add(meet);
         }
 
-        System.out.println("Get all (List) : " + new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create().toJson(answer));
+        System.out.println(gson.toJson(answer));
         routingContext.response()
                 .putHeader("content-type", "application/json; charset=UTF-8")
                 .end(new GsonBuilder()
@@ -144,12 +152,16 @@ public class Main {
         } else {
 
             String newMeetJSON = routingContext.getBodyAsString();
-            System.out.println("newMeetJSON (Str) = " + newMeetJSON);
-            Meet meet = gson.fromJson(newMeetJSON, Meet.class);
-            System.out.println("newMeetJSON (Obj) = " + meet);
-            meets.put(id, meet);
+            if(newMeetJSON != null && !newMeetJSON.equals("")){
+                System.out.println("newMeetJSON (Str) = " + newMeetJSON);
+                Meet meet = gson.fromJson(newMeetJSON, Meet.class);
+                System.out.println("newMeetJSON (Obj) = " + meet);
+                meets.put(id, meet);
 
-            answer = createSuccessMessage("Meet successfuly created");
+                answer = createSuccessMessage("Meet successfuly created");
+            }else{
+                answer = createSuccessMessage("Empty body");
+            }
         }
 
         routingContext.response().end(answer.toString());

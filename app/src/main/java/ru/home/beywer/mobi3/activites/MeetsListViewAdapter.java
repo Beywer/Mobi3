@@ -1,4 +1,4 @@
-package ru.home.beywer.mobi3;
+package ru.home.beywer.mobi3.activites;
 
 import android.content.Context;
 import android.util.Log;
@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import ru.beywer.home.mobi3.lib.Meet;
+import ru.home.beywer.mobi3.R;
 
 public class MeetsListViewAdapter extends BaseAdapter {
 

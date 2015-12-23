@@ -1,4 +1,4 @@
-package ru.home.beywer.mobi3.constants;
+package ru.home.beywer.mobi3;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -8,8 +8,9 @@ import com.google.gson.GsonBuilder;
  */
 public class Constants {
 
-    public static String HOST = "http://192.168.1.3:8080";
-    public static String ALL_MEETS_ADDRESS = HOST + "/api/meets/all";
+    public static final String HOST = "http://192.168.1.3:8080";
+    public static final String ALL_MEETS_ADDRESS = "/api/meets/all";
+    public static final String ADD_METT_ADDRESS = "/api/meets/";
 
     public static String LOGIN = "Beywer";
     public static String PASSWORD = "37927";

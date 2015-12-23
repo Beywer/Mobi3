@@ -14,4 +14,18 @@
     <string name="toText">по:</string>
     <string name="from">Тогда</string>
     <string name="to">Когда-то</string>
+    <string name="title_activity_add_meet">Новая встреча</string>
+    <string name="add_meet">Создать</string>
+
+    <string name="new_meet_descr_ht">Опасание</string>
+    <string name="new_meet_name_ht">Название</string>
+    <string name="new_meet_date_ht">Дата</string>
+    <string name="new_meet_start_ht">Начало</string>
+    <string name="new_meet_end_ht">Окончание</string>
+    <string name="new_meet_priority_ht">Приоритет</string>
+    <string name="empty_date">____.____.____</string>
+    <string name="empty_time">___ : ___</string>
+
+    <string name="cancel">Назад</string>
+    <string name="create">Создать</string>
 </resources>
