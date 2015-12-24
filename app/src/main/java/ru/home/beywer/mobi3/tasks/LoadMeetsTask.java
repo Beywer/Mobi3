@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -47,6 +48,7 @@ public class LoadMeetsTask extends AsyncTask<Void, Void, ArrayList> {
             //TODO get host
             URL url = new URL(Constants.HOST + Constants.ALL_MEETS_ADDRESS);
             httpConnection = (HttpURLConnection) url.openConnection();
+            httpConnection.setConnectTimeout(2000);
             httpConnection.addRequestProperty("Authorization", baseAuthorization(Constants.LOGIN, Constants.PASSWORD));
 
             Log.d(TAG, "Resp code   " + httpConnection.getResponseMessage());
@@ -73,6 +75,9 @@ public class LoadMeetsTask extends AsyncTask<Void, Void, ArrayList> {
         } catch (ConnectException e){
             connectionFailed = true;
             Log.d(TAG, "Connection exception", e);
+        } catch (SocketTimeoutException e){
+            meets = new ArrayList<>();
+            Log.d(TAG, "Timeout. Meetswill be empty ", e);
         } catch (MalformedURLException e) {
             Log.d(TAG, "Error trying connect to " + "http://www.android.com/", e);
         } catch (IOException e) {

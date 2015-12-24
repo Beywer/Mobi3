@@ -59,12 +59,14 @@ public class MeetsListViewAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.meetName)).setText(meets.get(position).getName());
         String description = meets.get(position).getDescription();
         String shortDescription;
-        if(description.length() < 47){
-            shortDescription = description;
-        } else {
-            shortDescription = description.substring(0, 47) + "...";
+        if(description != null) {
+            if (description.length() < 47) {
+                shortDescription = description;
+            } else {
+                shortDescription = description.substring(0, 47) + "...";
+            }
+            ((TextView) view.findViewById(R.id.meetDescription)).setText(shortDescription);
         }
-        ((TextView) view.findViewById(R.id.meetDescription)).setText(shortDescription);
 
         Date startDate = meets.get(position).getStart();
         Date endDate = meets.get(position).getEnd();

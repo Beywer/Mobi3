@@ -1,5 +1,7 @@
 package ru.home.beywer.mobi3.activites;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,20 +17,21 @@ import android.widget.ListView;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import ru.beywer.home.mobi3.lib.Meet;
+import ru.home.beywer.mobi3.Constants;
 import ru.home.beywer.mobi3.DownloadService;
 import ru.home.beywer.mobi3.R;
-import ru.home.beywer.mobi3.tasks.LoadMeetsTask;
+import ru.home.beywer.mobi3.receivers.LoadReceiver;
 
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String REQ_TYPE = "reqType";
+    public static final String NEED_NOTIF = "needLoad";
+    public static final String MEETS = "meets";
 
     private static final String TAG = "MAIN_ACTIVITY";
-    public static final String PARAM_PINTENT = "PINTENT";
     public static final String BROADCAST_ACTION = "ru.home.beywer.mobi3.broadcast";
 
     ArrayList<Meet> meets;
@@ -40,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getOverflowMenu();
 
+        Log.d(TAG, "Stared init complete");
+
         meets = new ArrayList<>();
         meetAdapter = new MeetsListViewAdapter(this, meets);
         final SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.meets_swipe_layout);
@@ -47,36 +52,47 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 Log.d(TAG, "refreshing");
-                loadAll();
-                //Остановить анимацию
-                refreshLayout.setRefreshing(false);
+                loadAll("refreshing");
             }
         });
-
         // настраиваем список
         ListView lvMain = (ListView) findViewById(R.id.meet_view);
         lvMain.setAdapter(meetAdapter);
 
-        loadAll();
+        Log.d(TAG, "Meet list init complete");
 
         BroadcastReceiver br = new BroadcastReceiver() {
             // действия при получении сообщений
             public void onReceive(Context context, Intent intent) {
-                int task = intent.getIntExtra("AZA", 0);
-                int status = intent.getIntExtra("AZA2", 0);
-                Log.d(TAG, "onReceive: AZA = " + task + ", AZA2 = " + status);
+                Log.d(TAG, "get new data  ");
+
+                String type = intent.getStringExtra(REQ_TYPE);
+                switch (type){
+                    case "result":
+                        ArrayList<Meet> newMeets = (ArrayList<Meet>) intent.getSerializableExtra(MEETS);
+                        Log.d(TAG, "get new data  " + newMeets);
+                        meets.clear();
+                        meets.addAll(newMeets);
+                        meetAdapter.notifyDataSetChanged();
+                        refreshLayout.setRefreshing(false);//Остановит онимацию, если был свайп.
+                        break;
+                }
+
             }
         };
-        // создаем фильтр для BroadcastReceiver
         IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
-        // регистрируем (включаем) BroadcastReceiver
         registerReceiver(br, intFilt);
+
+        Log.d(TAG, "BroadcastReceiver init complete");
+
+        loadAll("onCreate");
+        Log.d(TAG, "loadAll called");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        loadAll();
+        loadAll("onResume");
     }
 
     private void getOverflowMenu() {
@@ -92,20 +108,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadAll(){
-        LoadMeetsTask task = new LoadMeetsTask(MainActivity.this);
-        task.execute();
-        try {
-            ArrayList<Meet> loadedMeets = task.get();
-            meets.clear();
-            meets.addAll(loadedMeets);
-            meetAdapter.notifyDataSetChanged();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
+    private void loadAll(final String from){
+        Intent intent = new Intent(MainActivity.this, DownloadService.class);
+        intent.putExtra(REQ_TYPE, "load");
+        intent.putExtra(NEED_NOTIF, false);
+        startService(intent);
+        Log.d(TAG, "sended query for update from  " + from);
     }
 
     @Override
@@ -119,10 +127,12 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id){
             case R.id.action_settings:
-                Intent intent2 = new Intent(this, DownloadService.class);
-                intent2.putExtra(REQ_TYPE,"load");
-                startService(intent2);
-                Log.d(TAG, "Service sended comma");
+                Intent intent2 = new Intent(MainActivity.this, LoadReceiver.class);
+                PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, intent2, 0);
+                AlarmManager am =(AlarmManager)MainActivity.this.getSystemService(Context.ALARM_SERVICE);
+                am.cancel(pi);
+                am.setRepeating(AlarmManager.RTC, System.currentTimeMillis() + 2000, Constants.UPDATE_INTERVAL, pi);
+                Log.d(TAG, "Created timer");
                 return true;
             case R.id.add_meet:
                 Intent intent = new Intent(this, AddMeetActivity.class);

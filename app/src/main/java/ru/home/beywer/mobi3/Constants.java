@@ -15,6 +15,8 @@ public class Constants {
     public static String LOGIN = "Beywer";
     public static String PASSWORD = "37927";
 
+    public static long UPDATE_INTERVAL = 20000;
+
     public static final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
 
 }

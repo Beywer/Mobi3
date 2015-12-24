@@ -24,11 +24,13 @@
             android:name=".activites.AddMeetActivity"
             android:label="@string/title_activity_add_meet" >
         </activity>
-        <receiver android:name="ru.home.beywer.mobi3.BootLoadREceiver">
+        <receiver android:name=".receivers.BootLoadReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <service android:enabled="true" android:name=".DownloadService" />
     </application>
 
 </manifest>

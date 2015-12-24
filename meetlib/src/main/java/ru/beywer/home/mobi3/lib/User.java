@@ -1,10 +1,11 @@
 package ru.beywer.home.mobi3.lib;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import javax.lang.model.element.Name;
 
-public class User {
+public class User implements Serializable {
 
     private String login;
     private String password;
