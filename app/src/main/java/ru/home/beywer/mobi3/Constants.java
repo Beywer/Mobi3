@@ -8,7 +8,7 @@ public class Constants {
     public static final String ALL_MEETS_ADDRESS = "/api/meets/all";
     public static final String MEETS = "/api/meets/";
 
-    public static long UPDATE_INTERVAL = 5000;
+    public static long UPDATE_INTERVAL = 2000;
 
     public static final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
 

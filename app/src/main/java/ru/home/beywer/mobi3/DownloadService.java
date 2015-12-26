@@ -88,7 +88,7 @@ public class DownloadService extends Service {
             }
         });
         tr.start();
-//        Toast.makeText(this, "Load", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Load " + meets.size(), Toast.LENGTH_SHORT).show();
     }
 
     private void sendResult(){

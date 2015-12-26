@@ -1,0 +1,231 @@
+<html>
+<header><title>Meetings admin server</title></header>
+
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+
+<style>
+
+    .btn{
+        /*width: 120px;*/
+        padding: 0 20px 0 20px;
+    }
+
+</style>
+
+<body>
+
+<div class="row">
+    <div class="col l6">
+        <div class="row">
+            <div class="col l5">
+                <label for="login">Login</label>
+                <input id="login" value="Beywer123">
+            </div>
+            <div class="col l5">
+                <label for="password">Login</label>
+                <input id="password" value="37927">
+            </div>
+            <div class="col l2">
+                <a class="waves-effect waves-light btn" onclick="addUser()">Добавить</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col l4">
+                <label for="userName">Name</label>
+                <input id="userName" value="Daniil">
+            </div>
+            <div class="col l4">
+                <label for="userSurname">Suename</label>
+                <input id="userSurname" value="Miroshnikov">
+            </div>
+            <div class="col l4">
+                <label for="userFathername">Fathername</label>
+                <input id="userFathername" value="Jurivich">
+            </div>
+        </div>
+    </div>
+    <div class="col l6">
+        <div class="row">
+            <div class="col l3">
+                <label for="meetName">Name</label>
+                <input id="meetName" value="Mett olol">
+            </div>
+            <div class="col l9">
+                <label for="meetDescr">Описание</label>
+                <input id="meetDescr" value="Это встреча встреч. Вот прям вообще всем быть.">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col l3">
+                <label for="startDate">Начало</label>
+                <input id="startDate" value="2015-12-26T04:12:00">
+            </div>
+            <div class="col l3">
+                <label for="endDate">Окончание</label>
+                <input id="endDate" value="2015-12-26T04:14:00">
+            </div>
+            <div class="col l3">
+                <label for="owner">Логин создавшего</label>
+                <input id="owner" value="Beywer">
+            </div>
+            <div class="col l2">
+                <a class="waves-effect waves-light btn" onclick="addMeet()">Добавить</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col l4">
+        <div id="users">
+
+        </div>
+    </div>
+    <div class="col l4">
+        <div id="meets">
+
+        </div>
+    </div>
+    <div class="col l4">
+        <label for="meetId">Встреча</label>
+        <input id="meetId" value="">
+        <label for="loginId">Логин</label>
+        <input id="loginId" value="">
+        <div class="col l2">
+            <a class="waves-effect waves-light btn" onclick="addPerticipant()">Добавить</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    var login = document.getElementById("login");
+    var password = document.getElementById("password");
+    var userName = document.getElementById("userName");
+    var userSurname = document.getElementById("userSurname");
+    var userFathername = document.getElementById("userFathername");
+
+    var meetName = document.getElementById("meetName");
+    var meetDescr = document.getElementById("meetDescr");
+    var startDate = document.getElementById("startDate");
+    var endDate = document.getElementById("endDate");
+    var owner = document.getElementById("owner");
+
+    var meetId = document.getElementById("meetId");
+    var loginId = document.getElementById("loginId");
+
+    var users = document.getElementById("users");
+    var meets = document.getElementById("meets");
+
+    function addUser(){
+        var loginStr = login.value;
+        var passwordStr = password.value;
+        var userNameStr = userName.value;
+        var userSurnameStr = userSurname.value;
+        var userFathernameStr = userFathername.value;
+
+        var mess = {
+            login: loginStr,
+            name: userNameStr,
+            surname: userSurnameStr,
+            fatherName: userFathernameStr,
+            password: passwordStr
+        };
+
+        $.ajax({
+            type: "PUT",
+            url: "/api/users/"+loginStr,
+            data: JSON.stringify(mess)
+        });
+
+        var success = function(data){
+            loadUsers(data);
+        };
+
+        $.ajax({
+            type: "GET",
+            url: "/api/users/all",
+            success:success
+        });
+    }
+    function addMeet(){
+        var meetName = meetName.value;
+        var meetDescr = meetDescr.value;
+        var startDate = startDate.value;
+        var endDate = endDate.value;
+        var owner = owner.value;
+        var id = "Meet"+new Date().getTime();
+
+        var mess = {
+            name: meetName,
+            description: meetDescr,
+            id: id,
+            start: startDate,
+            end: endDate,
+            owner:{
+                login: owner
+            },
+            participants:{
+                login: owner
+            }
+        };
+
+        $.ajax({
+            type: "PUT",
+            url: "/api/meets/"+id,
+            data: JSON.stringify(mess)
+        });
+
+        var success = function(data){
+            loadMeets(data);
+        };
+
+        $.ajax({
+            type: "GET",
+            url: "/api/meets/all",
+            success:success
+        });
+    }
+
+    function loadUsers(data){
+        var result = JSON.parse(data);
+        while (users.firstChild) {
+            users.removeChild(users.firstChild);
+        }
+        for(i =0; i< result.length; i++){
+            var div = document.createElement("div");
+            div.innerHTML = "Login " + result[i].login + "  Name " + result[i].name;
+            users.appendChild(div);
+        }
+    }
+
+    function loadMeets(data){
+        var result = JSON.parse(data);
+        while (meets.firstChild) {
+            meets.removeChild(meets.firstChild);
+        }
+        for(i =0; i< result.length; i++){
+            var div = document.createElement("div");
+            div.innerHTML = "Name " + result[i].name + "  start " + result[i].start + "  end  " + result[i].end;
+            meets.appendChild(div);
+        }
+    }
+
+
+    $.ajax({
+        type: "GET",
+        url: "/api/users/all",
+        success:loadUsers
+    });
+    $.ajax({
+        type: "GET",
+        url: "/api/meets/all",
+        success:loadUsers
+    });
+
+</script>
+</body>
+</html>

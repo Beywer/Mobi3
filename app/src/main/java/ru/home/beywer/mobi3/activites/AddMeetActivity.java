@@ -5,11 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import ru.beywer.home.mobi3.lib.MeetPriority;
 import ru.home.beywer.mobi3.DatePickerFragment;
@@ -98,6 +102,13 @@ public class AddMeetActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        Spinner spinner = (Spinner)findViewById(R.id.prioritySpinner);
+        final Map<String, MeetPriority> priorities = new HashMap<>(MeetPriority.values().length);
+        priorities.put("Low",MeetPriority.LOW);
+        priorities.put("Middle",MeetPriority.MIDDLE);
+        priorities.put("Height",MeetPriority.HIGHT);
+        spinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, priorities.keySet().toArray(new String[3])));
 
     }
 

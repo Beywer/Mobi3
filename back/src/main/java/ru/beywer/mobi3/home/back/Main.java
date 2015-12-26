@@ -42,26 +42,24 @@ public class Main {
         meets = new HashMap<String, Meet>();
 
         User me = new User("Daniil","Miroshnikov", "Jurevich", "Beywer", "admin");
-        User me2 = new User("Daniil","Miroshnikov", "Jurevich", "Beywer2", "admin");
         me.setPassword("37927");
-        me2.setPassword("37927");
         users.put(me.getLogin(), me);
-        Meet defaultMeet = new Meet("meetOne", me2, new Date(), new Date(System.currentTimeMillis() + 1000));
-        defaultMeet.setId("meetOne");
-        defaultMeet.setDescription("AZAZA ME!!!");
-        meets.put("meetOne", defaultMeet);
 
         Vertx vertx = Vertx.vertx();
         Router router = Router.router(vertx);
 
-        StaticHandler staticHandler = StaticHandler.create();
-        staticHandler.setWebRoot("files");
+        StaticHandler staticHandler = StaticHandler.create("files");
+        staticHandler.setCachingEnabled(false);
 
         router.route("/meetApp/*").handler(staticHandler);
+
 
         // REST API
         router.route("/api/*").handler(BodyHandler.create());
         router.route("/api/*").handler(Main::authRequest);
+
+        router.put("/api/users/:login").handler(Main::addUser);
+        router.route("/api/users/all").handler(Main::getUsers);
 
         router.get("/api/meets/all").handler(Main::getAllMeets);
         router.get("/api/meets/:id").handler(Main::getMeetById);
@@ -71,6 +69,29 @@ public class Main {
 
         vertx.createHttpServer().requestHandler(router::accept).listen(8080);
 
+    }
+
+    private static void getUsers(RoutingContext routingContext) {
+
+        ArrayList<User> usersList = new ArrayList<>();
+
+        for(String key: users.keySet()){
+            usersList.add(users.get(key));
+        }
+
+        routingContext.response().end(gson.toJson(usersList));
+
+    }
+
+    private static void addUser(RoutingContext routingContext) {
+        String login = routingContext.request().getParam("login");
+
+        System.out.println(routingContext.getBodyAsString());
+        User user = gson.fromJson(routingContext.getBodyAsString(), User.class);
+
+        users.put(login,user);
+
+        routingContext.response().end();
     }
 
     private static void deleteTask(RoutingContext routingContext) {
@@ -276,17 +297,20 @@ public class Main {
         }
     }
     private static boolean isBefore(Date date, Date before){
-        int beforeYear = before.getYear();
-        int beforeMonth = before.getMonth();
-        int beforeDay = before.getDay();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(before);
+        int beforeYear = cal.get(Calendar.YEAR);
+        int beforeMonth = cal.get(Calendar.MONTH);
+        int beforeDay = cal.get(Calendar.DAY_OF_MONTH);
 
-        int year = date.getYear();
-        int month = date.getMonth();
-        int day = date.getDay();
+        cal.setTime(date);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
         long longDate = year*1000000 + month*1000 + day;
         long longBefore = beforeYear*1000000 + beforeMonth*1000 + beforeDay;
-        System.out.println("date" +  year + "/" + month + "/" + day + "   "+ longDate);
-        System.out.println("after" +  beforeYear + "/" + beforeMonth + "/" + beforeDay + "   "+ longBefore);
+        System.out.println("date" + year + "/" + month + "/" + day + "   " + longDate);
+        System.out.println("before" + beforeYear + "/" + beforeMonth + "/" + beforeDay + "   " + longBefore);
 
         if(longDate<=longBefore){
             System.out.println(date + "  isBefore  " + before);
@@ -297,13 +321,16 @@ public class Main {
         }
     }
     private static boolean isAfter(Date date, Date after){
-        int afterYear = after.getYear();
-        int afterMonth = after.getMonth();
-        int afterDay = after.getDay();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(after);
+        int afterYear = cal.get(Calendar.YEAR);
+        int afterMonth = cal.get(Calendar.MONTH);
+        int afterDay = cal.get(Calendar.DAY_OF_MONTH);
 
-        int year = date.getYear();
-        int month = date.getMonth();
-        int day = date.getDay();
+        cal.setTime(date);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
         long longDate = year*1000000 + month*1000 + day;
         long longAfter = afterYear*1000000 + afterMonth*1000 + afterDay;
         System.out.println("date" +  year + "/" + month + "/" + day + "   "+ longDate);
