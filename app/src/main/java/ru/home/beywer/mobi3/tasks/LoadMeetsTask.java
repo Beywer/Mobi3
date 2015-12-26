@@ -1,7 +1,10 @@
 package ru.home.beywer.mobi3.tasks;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -32,10 +35,12 @@ public class LoadMeetsTask extends AsyncTask<Void, Void, ArrayList> {
     private boolean connectionFailed = false;
     private boolean unauthorized = false;
     private Context context;
+    private SharedPreferences mPref;
 
     public LoadMeetsTask(Context context){
         super();
         this.context = context;
+        mPref = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override
@@ -45,12 +50,16 @@ public class LoadMeetsTask extends AsyncTask<Void, Void, ArrayList> {
 
         HttpURLConnection httpConnection = null;
         try {
-            //TODO get host
-            URL url = new URL(Constants.HOST + Constants.ALL_MEETS_ADDRESS);
+            String host = mPref.getString("host","");
+            String login = mPref.getString("login","");
+            String password = mPref.getString("password","");
+
+            URL url = new URL(host + Constants.ALL_MEETS_ADDRESS);
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setConnectTimeout(2000);
-            httpConnection.addRequestProperty("Authorization", baseAuthorization(Constants.LOGIN, Constants.PASSWORD));
+            httpConnection.addRequestProperty("Authorization", baseAuthorization(login, password));
 
+            Log.d(TAG, "performing request GET:  " + host + Constants.ALL_MEETS_ADDRESS);
             Log.d(TAG, "Resp code   " + httpConnection.getResponseMessage());
             if(httpConnection.getResponseCode() == 401){
                 unauthorized = true;
@@ -77,11 +86,11 @@ public class LoadMeetsTask extends AsyncTask<Void, Void, ArrayList> {
             Log.d(TAG, "Connection exception", e);
         } catch (SocketTimeoutException e){
             meets = new ArrayList<>();
-            Log.d(TAG, "Timeout. Meetswill be empty ", e);
+            Log.d(TAG, "Timeout. Meets will be empty ", e);
         } catch (MalformedURLException e) {
-            Log.d(TAG, "Error trying connect to " + "http://www.android.com/", e);
+            Log.d(TAG, "Error trying connect to ", e);
         } catch (IOException e) {
-            Log.d(TAG, "While reading json from " + "http://www.android.com/", e);
+            Log.d(TAG, "While reading json from ", e);
         }finally {
             if (httpConnection != null) {
                 httpConnection.disconnect();

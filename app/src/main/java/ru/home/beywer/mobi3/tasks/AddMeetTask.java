@@ -1,13 +1,11 @@
 package ru.home.beywer.mobi3.tasks;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.util.Base64;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.google.gson.JsonObject;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
@@ -15,18 +13,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 import ru.beywer.home.mobi3.lib.Meet;
 import ru.beywer.home.mobi3.lib.MeetPriority;
+import ru.beywer.home.mobi3.lib.User;
 import ru.home.beywer.mobi3.Constants;
 
 public class AddMeetTask extends AsyncTask<Void, Void, Void> {
@@ -36,10 +32,12 @@ public class AddMeetTask extends AsyncTask<Void, Void, Void> {
     private boolean unauthorized = false;
     private Meet newMeet;
     private Context context;
+    private SharedPreferences mPref;
 
     public AddMeetTask(Context context, String name, String descr, Calendar start, Calendar end, MeetPriority priority){
         super();
         this.context = context;
+        mPref = PreferenceManager.getDefaultSharedPreferences(context);
 
         Meet meet = new Meet();
         meet.setDescription(descr);
@@ -52,16 +50,26 @@ public class AddMeetTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        Log.d(TAG, "Try to get all meets ");
-
-        String taskId = UUID.randomUUID().toString();
+        Log.d(TAG, "Add meet ");
 
         HttpURLConnection httpConnection = null;
         try {
+            String host = mPref.getString("host","");
+            String login = mPref.getString("login","");
+            String password = mPref.getString("password","");
+
+            User owner = new User();
+            owner.setLogin(login);
+            newMeet.setOwner(owner);
+            newMeet.addParticipant(owner);
+
             //TODO get host
-            URL url = new URL(Constants.HOST + Constants.ADD_METT_ADDRESS + taskId);
+            String taskId = UUID.randomUUID().toString();
+            newMeet.setId(taskId);
+            URL url = new URL(host + Constants.MEETS + taskId);
+            Log.d(TAG, "Address: " + host + Constants.MEETS + taskId);
             httpConnection = (HttpURLConnection) url.openConnection();
-            httpConnection.addRequestProperty("Authorization", baseAuthorization(Constants.LOGIN, Constants.PASSWORD));
+            httpConnection.addRequestProperty("Authorization", HttpUtil.baseAuthorization(login, password));
             httpConnection.setRequestMethod("PUT");
             httpConnection.setDoOutput(true);
 
@@ -72,6 +80,7 @@ public class AddMeetTask extends AsyncTask<Void, Void, Void> {
             writer.write(Constants.gson.toJson(newMeet));
             writer.flush();
 
+            Log.d(TAG, "Resp   " + httpConnection.getResponseMessage());
             Log.d(TAG, "Resp code   " + httpConnection.getResponseMessage());
             if(httpConnection.getResponseCode() == 401){
                 unauthorized = true;
@@ -106,16 +115,6 @@ public class AddMeetTask extends AsyncTask<Void, Void, Void> {
                     .makeText(context, "Ошибка авторизации", Toast.LENGTH_SHORT)
                     .show();
         }
-    }
-
-    private String baseAuthorization(String login, String password) throws UnsupportedEncodingException {
-
-        String loginPassword = login+":"+password;
-        byte[] encodedBytes = Base64.encode(loginPassword.getBytes(), Base64.DEFAULT);
-        String baseAuthorization = "Basic " + new String(encodedBytes, "UTF-8");
-        Log.d(TAG, "Created base auth: " + baseAuthorization);
-
-        return baseAuthorization;
     }
 
 //    private void displayMessage(final String mess){

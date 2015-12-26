@@ -24,13 +24,25 @@
             android:name=".activites.AddMeetActivity"
             android:label="@string/title_activity_add_meet" >
         </activity>
-        <receiver android:name=".receivers.BootLoadReceiver">
+
+        <receiver android:name=".receivers.BootLoadReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <service android:enabled="true" android:name=".DownloadService" />
+        <service
+            android:name=".DownloadService"
+            android:enabled="true" />
+
+        <activity
+            android:name=".activites.Preferences"
+            android:label="@string/set_preferences" >
+        </activity>
+        <activity
+            android:name=".activites.MeetActivity"
+            android:label="@string/title_activity_meet" >
+        </activity>
     </application>
 
 </manifest>

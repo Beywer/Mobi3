@@ -37,7 +37,7 @@ public class TimePickerFragment extends DialogFragment
         this.hour = hourOfDay;
         this.minute = minute;
 
-        this.view.setText(hour +"."+ minute);
+        this.view.setText(hour +":"+ minute);
     }
 
     public int getMinute() {

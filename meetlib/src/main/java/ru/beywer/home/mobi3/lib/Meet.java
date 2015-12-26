@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Meet implements Serializable {
 
+    private String id;
     private String name;
     private String description;
     private User owner;
@@ -16,6 +17,7 @@ public class Meet implements Serializable {
     private MeetPriority meetPriority;
 
     public Meet(){
+        id = null;
         name = null;
         description = null;
         owner = null;
@@ -100,5 +102,26 @@ public class Meet implements Serializable {
 
     public void setMeetPriority(MeetPriority meetPriority) {
         this.meetPriority = meetPriority;
+    }
+
+    public void addParticipant(User newParticipant){
+        participants.add(newParticipant);
+    }
+
+    public void removeParticipant(User newParticipant){
+        for(User user : participants){
+            if(user.getLogin().equals(newParticipant.getLogin())){
+                participants.remove(user);
+                break;
+            }
+        }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

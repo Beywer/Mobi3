@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:title="Логин"
+        android:key="login" />
+    <EditTextPreference
+        android:title="Пароль"
+        android:key="password" />
+    <EditTextPreference
+        android:title="Адрес сервера"
+        android:key="host" />
+</PreferenceScreen>

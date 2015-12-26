@@ -4,10 +4,12 @@
     <string name="meetsHeader">Встречи</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="perform_get">Perform GET</string>
-    <string name="meetDefaultName">meetName</string>
-    <string name="meetDefaultDescription">This is a meet. Be happy ^^ !</string>
+
+    <string name="action_settings">Настройкти</string>
+    <string name="action_add_meet">Создать</string>
+
+    <string name="meetDefaultName">Что-то пошло не так :(</string>
+    <string name="meetDefaultDescription">…</string>
     <string name="participate">Принять участие</string>
 
     <string name="fromText">С:</string>
@@ -15,7 +17,6 @@
     <string name="from">Тогда</string>
     <string name="to">Когда-то</string>
     <string name="title_activity_add_meet">Новая встреча</string>
-    <string name="add_meet">Создать</string>
 
     <string name="new_meet_descr_ht">Опасание</string>
     <string name="new_meet_name_ht">Название</string>
@@ -27,5 +28,12 @@
     <string name="empty_time">___ : ___</string>
 
     <string name="cancel">Назад</string>
+    <string name="delete">Удалить</string>
     <string name="create">Создать</string>
+    <string name="set_preferences">Настройки</string>
+    <string name="rb_today_t">За сегодня</string>
+    <string name="rb_interval_t">Задать интервал</string>
+    <string name="rb_search_t">Поиск</string>
+    <string name="title_activity_meet">MeetActivity</string>
+    <string name="participates_ht">Участники:</string>
 </resources>

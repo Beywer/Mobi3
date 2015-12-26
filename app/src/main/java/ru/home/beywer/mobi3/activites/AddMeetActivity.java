@@ -2,7 +2,6 @@ package ru.home.beywer.mobi3.activites;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +30,7 @@ public class AddMeetActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        MainActivity.shown = true;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_meet);
 
@@ -48,8 +48,7 @@ public class AddMeetActivity extends AppCompatActivity {
                     dateFragment = new DatePickerFragment();
                     dateFragment.setTextView((TextView) v);
                 }
-                else
-                    dateFragment.show(getSupportFragmentManager(), "dateElemDatePicker");
+                dateFragment.show(getSupportFragmentManager(), "dateElemDatePicker");
             }
         });
         startElem.setOnClickListener(new View.OnClickListener() {
@@ -59,8 +58,7 @@ public class AddMeetActivity extends AppCompatActivity {
                     startFragment = new TimePickerFragment();
                     startFragment.setTextView((TextView)v);
                 }
-                else
-                    startFragment.show(getSupportFragmentManager(), "startElemTimePicker");
+                startFragment.show(getSupportFragmentManager(), "startElemTimePicker");
             }
         });
         endElem.setOnClickListener(new View.OnClickListener() {
@@ -70,8 +68,7 @@ public class AddMeetActivity extends AppCompatActivity {
                     endFragment = new TimePickerFragment();
                     endFragment.setTextView((TextView)v);
                 }
-                else
-                    endFragment.show(getSupportFragmentManager(), "startElemTimePicker");
+                endFragment.show(getSupportFragmentManager(), "startElemTimePicker");
             }
         });
 
@@ -89,13 +86,12 @@ public class AddMeetActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Calendar startDate = Calendar.getInstance();
                 startDate.setTimeInMillis(0);
-                startDate.set(dateFragment.getYear(), dateFragment.getMonth(), dateFragment.getDay(),
+                startDate.set(dateFragment.getYear(), dateFragment.getMonth()-1, dateFragment.getDay(),
                         startFragment.getHour(), startFragment.getMinute(), 0);
                 Calendar endDate = Calendar.getInstance();
                 endDate.setTimeInMillis(0);
-                endDate.set(dateFragment.getYear(), dateFragment.getMonth(), dateFragment.getDay(),
+                endDate.set(dateFragment.getYear(), dateFragment.getMonth()-1, dateFragment.getDay(),
                         endFragment.getHour(), endFragment.getMinute(), 0);
-                Log.d(TAG, "Dates: " + startDate + "   " + endDate);
                 AddMeetTask adder = new AddMeetTask(AddMeetActivity.this, nameElem.getText().toString(),
                         descriptionElem.getText().toString(),startDate, endDate, MeetPriority.LOW);
                 adder.execute();
@@ -105,6 +101,11 @@ public class AddMeetActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        MainActivity.shown = false;
+        super.onDestroy();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
